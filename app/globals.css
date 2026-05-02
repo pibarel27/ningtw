@@ -1,0 +1,752 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 11% 5%;
+    --foreground: 210 40% 98%;
+    --card: 240 10% 8%;
+    --card-foreground: 210 40% 98%;
+    --popover: 240 10% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Gaming HUD palette */
+    --primary:30 100% 60%;
+    --primary-foreground:  0 0% 100%;
+    --secondary: 295 100% 68%; 
+    --secondary-foreground: 240 11% 5%;
+    --accent: 30 100% 60%; 
+    --accent-foreground: 240 11% 5%;
+
+    --muted: 240 9% 14%;
+    --muted-foreground: 215 20% 70%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 12% 18%;
+    --input: 240 12% 18%;
+    --ring: 186 100% 55%;
+    --radius: 0.75rem;
+
+    /* Extra HUD tokens */
+    --hud-glow: 186 100% 55%;
+    --hud-glow-2: 295 100% 68%;
+    --hud-grid: 186 100% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html, body {
+    @apply overflow-x-hidden;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Gaming-style crosshair cursor */
+  body {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%2300E5FF' stop-opacity='0.95'/%3E%3Cstop offset='70%25' stop-color='%2300E5FF' stop-opacity='0.15'/%3E%3Cstop offset='100%25' stop-color='%2300E5FF' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='11' fill='url(%23g)'/%3E%3Ccircle cx='16' cy='16' r='3.2' fill='none' stroke='%2300E5FF' stroke-width='2'/%3E%3Cpath d='M16 2v7M16 23v7M2 16h7M23 16h7' stroke='%23FFFFFF' stroke-opacity='0.9' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M16 4v5M16 23v5M4 16h5M23 16h5' stroke='%2300E5FF' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 16 16, auto;
+  }
+
+  a,
+  button,
+  [role="button"],
+  summary,
+  input[type="button"],
+  input[type="submit"] {
+    cursor: pointer;
+  }
+  
+  .font-montserrat {
+    font-family: var(--font-montserrat), sans-serif;
+  }
+  
+  .font-poppins {
+    font-family: var(--font-poppins), sans-serif;
+  }
+}
+
+@layer components {
+  /* ===== Gaming HUD base layers ===== */
+  .hud-root {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(1200px 900px at 15% 15%, hsl(var(--hud-glow) / 0.16), transparent 55%),
+      radial-gradient(900px 650px at 80% 20%, hsl(var(--hud-glow-2) / 0.14), transparent 60%),
+      radial-gradient(900px 650px at 55% 90%, hsl(var(--accent) / 0.10), transparent 60%),
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 100%);
+  }
+
+  .hud-root::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: -2;
+    background-image:
+      linear-gradient(to right, hsl(var(--hud-grid) / 0.13) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--hud-grid) / 0.10) 1px, transparent 1px);
+    background-size: 72px 72px;
+    transform: perspective(900px) rotateX(55deg) translateY(-18%);
+    transform-origin: top center;
+    filter: blur(0.2px);
+    animation: hud-grid-scroll 18s linear infinite;
+    opacity: 0.55;
+  }
+
+  .hud-root::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.045) 0px,
+        rgba(255, 255, 255, 0.045) 1px,
+        transparent 2px,
+        transparent 6px
+      ),
+      radial-gradient(1000px 650px at 30% 20%, hsl(var(--hud-glow) / 0.10), transparent 65%),
+      radial-gradient(900px 650px at 70% 60%, hsl(var(--hud-glow-2) / 0.08), transparent 70%);
+    mix-blend-mode: overlay;
+    opacity: 0.38;
+    animation: hud-scan 9s linear infinite;
+  }
+
+  .hud-vignette {
+    pointer-events: none;
+    position: absolute;
+    inset: -2px;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 50% 10%, transparent 0 40%, rgba(0,0,0,0.55) 78%, rgba(0,0,0,0.8) 100%);
+  }
+
+  .hud-content {
+    position: relative;
+    z-index: 10;
+  }
+
+  .hud-panel {
+    @apply relative rounded-xl border border-primary/20 backdrop-blur-md;
+    background-color: hsl(var(--card) / 0.55);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+      0 12px 40px rgba(0, 0, 0, 0.55),
+      0 0 30px hsl(var(--hud-glow) / 0.12);
+    overflow: hidden;
+  }
+
+  .hud-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, hsl(var(--hud-glow) / 0.10), transparent 45%),
+      linear-gradient(315deg, hsl(var(--hud-glow-2) / 0.08), transparent 40%);
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .hud-panel::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    transform: translateX(-120%);
+    animation: hud-sweep 4.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .hero-hud {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    padding-top: 5rem;
+  }
+
+  .hero-hud .hero-title {
+    font-size: clamp(2.4rem, 4.6vw, 4.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .glitch {
+    position: relative;
+    display: inline-block;
+    text-shadow:
+      0 0 18px hsl(var(--hud-glow) / 0.35),
+      0 0 22px hsl(var(--hud-glow-2) / 0.25);
+  }
+
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0.55;
+    pointer-events: none;
+    clip-path: inset(0 0 0 0);
+  }
+
+  .glitch::before {
+    transform: translate(2px, -1px);
+    color: hsl(var(--secondary));
+    animation: hud-glitch 2.4s infinite linear alternate-reverse;
+  }
+
+  .glitch::after {
+    transform: translate(-2px, 1px);
+    color: hsl(var(--accent));
+    animation: hud-glitch 2.8s infinite linear alternate;
+  }
+
+  /* Navigation styles */
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 50%;
+    background-color: hsl(var(--primary));
+    transition: width 0.3s ease, left 0.3s ease;
+  }
+
+  .nav-link.active::after,
+  .nav-link:hover::after {
+    width: 100%;
+    left: 0;
+  }
+
+  .nav-link.active {
+    color: hsl(var(--primary));
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply font-bold text-lg;
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 6px 24px hsl(var(--hud-glow) / 0.22),
+      0 0 0 1px rgba(255,255,255,0.06) inset;
+  }
+
+  .btn-primary:hover {
+    background-color: hsl(var(--secondary)) !important;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+      0 10px 34px hsl(var(--hud-glow-2) / 0.28),
+      0 0 0 1px rgba(255,255,255,0.08) inset;
+  }
+
+  .btn-secondary {
+    @apply font-bold text-lg;
+    border: 1px solid hsl(var(--primary) / 0.7) !important;
+    color: hsl(var(--primary)) !important;
+    background: transparent !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.22), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-secondary:hover::before {
+    left: 100%;
+  }
+
+  .btn-secondary:hover {
+    border-color: hsl(var(--secondary) / 0.85) !important;
+    color: hsl(var(--secondary)) !important;
+    background: transparent !important;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+      0 0 22px hsl(var(--hud-glow-2) / 0.25),
+      0 0 0 1px rgba(255,255,255,0.06) inset;
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    color: hsl(var(--primary));
+    transition: color 0.3s ease;
+    animation: bounce 2s infinite;
+  }
+
+  .scroll-indicator:hover {
+    color: hsl(var(--secondary));
+  }
+
+  /* Game card styles */
+  .game-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .game-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 77, 166, 0.1), transparent);
+    transition: left 0.6s;
+    z-index: 1;
+  }
+
+  .game-card:hover::before {
+    left: 100%;
+  }
+
+  .game-card:hover:not(.coming-soon) {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+      0 22px 60px hsl(var(--hud-glow-2) / 0.22),
+      0 0 26px hsl(var(--hud-glow) / 0.16);
+  }
+
+  .game-card:hover:not(.coming-soon) .game-title {
+    color: #FF4DA6;
+  }
+
+  .game-details-link {
+    @apply text-primary transition-colors duration-300;
+  }
+
+  .game-card:hover .game-details-link {
+    @apply text-secondary;
+  }
+
+  /* News card styles with enhanced glow */
+  .news-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .news-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 212, 0, 0.1), transparent);
+    transition: left 0.7s;
+    z-index: 1;
+  }
+
+  .news-card:hover::after {
+    left: 100%;
+  }
+
+  .news-card:hover {
+    box-shadow:
+      0 22px 70px hsl(var(--hud-glow-2) / 0.25),
+      0 0 34px hsl(var(--hud-glow) / 0.18);
+    transform: translateY(-5px) scale(1.02);
+  }
+
+  .news-card:hover .news-title {
+    color: #FF4DA6;
+  }
+
+  .news-card:hover .news-image {
+    transform: scale(1.08);
+  }
+
+  .news-card:hover .read-more {
+    color: #FF4DA6;
+  }
+
+  /* Footer styles */
+  .footer-link {
+    color: #FFFFFF;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .footer-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 50%;
+    background-color: #FFD400;
+    transition: all 0.3s ease;
+  }
+
+  .footer-link:hover::after {
+    width: 100%;
+    left: 0;
+  }
+
+  .footer-link:hover {
+    color: #FFD400;
+  }
+
+  .social-icon {
+    @apply h-6 w-6 text-white transition-colors duration-300;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  }
+
+  .social-icon:hover {
+    @apply text-secondary;
+    filter: drop-shadow(0 0 10px rgba(255, 77, 166, 0.6));
+    transform: translateY(-2px) scale(1.1);
+  }
+
+  /* Newsletter section */
+  .newsletter-button {
+    @apply bg-primary text-background transition-all duration-300 hover:bg-secondary;
+    box-shadow: 0 6px 22px hsl(var(--hud-glow) / 0.22);
+  }
+
+  .newsletter-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 34px hsl(var(--hud-glow-2) / 0.28);
+  }
+
+  /* Carousel navigation */
+  .carousel-nav {
+    @apply bg-primary text-background transition-colors duration-300 hover:bg-secondary;
+  }
+
+  /* Game filters */
+  .filter-button {
+    @apply rounded-full bg-muted px-4 py-2 text-primary transition-colors duration-300 hover:bg-secondary hover:text-background;
+  }
+
+  .filter-button.active {
+    @apply bg-primary text-background;
+  }
+
+  /* Review section */
+  .review-form {
+    @apply rounded-lg bg-card p-6 shadow-lg;
+  }
+
+  /* Dialog close button */
+  .dialog-close {
+    @apply rounded-full bg-muted p-2 text-primary transition-colors duration-300 hover:bg-primary hover:text-background;
+  }
+
+  /* Game details link */
+  .game-view-more {
+    @apply inline-flex items-center gap-2 text-primary transition-colors duration-300 hover:text-secondary;
+  }
+
+  /* Filter section */
+  .filter-section {
+    @apply flex gap-4 overflow-x-auto pb-4;
+  }
+
+  .filter-section::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .filter-section::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 2px;
+  }
+
+  .filter-section::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--secondary));
+  }
+
+  /* Game hero section */
+  .game-hero {
+    @apply relative min-h-[60vh] overflow-hidden;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .game-hero::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background;
+  }
+
+  .game-hero-content {
+    @apply relative z-10;
+  }
+
+  /* Game logo */
+  .game-logo {
+    @apply absolute left-8 top-1/2 z-20 -translate-y-1/2 rounded-lg bg-background/80 p-4 backdrop-blur-sm;
+  }
+
+  /* Related games section */
+  .related-games-container {
+    @apply flex gap-8 overflow-x-auto pb-4;
+  }
+
+  /* Search and filter styles */
+  .search-input {
+    @apply w-full rounded-lg border border-muted bg-background px-4 py-3 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20;
+  }
+
+  .genre-filter {
+    @apply rounded-full border border-muted bg-background px-4 py-2 text-sm font-medium text-muted-foreground transition-all duration-300 hover:border-primary hover:text-primary;
+  }
+
+  .genre-filter.active {
+    @apply border-primary bg-primary text-background;
+  }
+
+  /* About page enhancements */
+  .founder-name {
+    @apply transition-all duration-300 hover:scale-105;
+  }
+  
+  .founder-name:focus {
+    @apply outline-2 outline-primary outline-offset-2;
+  }
+
+  .about-hero {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.18) 0%, hsl(var(--secondary) / 0.16) 45%, hsl(var(--background) / 0.95) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, hsl(var(--primary) / 0.10) 0%, hsl(var(--secondary) / 0.06) 50%, transparent 70%);
+    animation: float 25s ease-in-out infinite;
+  }
+
+  .about-section-card {
+    @apply rounded-xl bg-gradient-to-br from-card via-card/90 to-card/80 p-8 shadow-lg backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20;
+    border: 1px solid hsl(var(--primary) / 0.16);
+  }
+
+  .about-section-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: hsl(var(--primary) / 0.34);
+  }
+
+  .founder-card {
+    @apply rounded-xl bg-gradient-to-br from-card via-card/90 to-muted/20 p-8 shadow-2xl backdrop-blur-sm transition-all duration-500;
+    border: 1px solid hsl(var(--secondary) / 0.20);
+  }
+
+  .founder-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 55px hsl(var(--hud-glow-2) / 0.18);
+    border-color: hsl(var(--primary) / 0.40);
+  }
+
+  .value-card {
+    @apply rounded-xl bg-gradient-to-br from-card to-muted/20 p-6 shadow-lg transition-all duration-500 hover:shadow-2xl hover:shadow-secondary/20;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .value-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    border-color: hsl(var(--secondary) / 0.30);
+  }
+
+  .value-icon {
+    @apply mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-secondary/10 text-primary transition-all duration-300;
+    box-shadow: 0 6px 22px hsl(var(--hud-glow) / 0.18);
+  }
+
+  .value-card:hover .value-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 10px 32px hsl(var(--hud-glow-2) / 0.22);
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.28), hsl(var(--secondary) / 0.18));
+  }
+
+  /* Reviews section styles */
+  .reviews-section {
+    @apply space-y-8;
+  }
+
+  .reviews-section .star-rating {
+    @apply transition-all duration-200 hover:scale-110 focus:scale-110 focus:outline-2 focus:outline-primary focus:outline-offset-2;
+  }
+
+  .reviews-section .review-card {
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/10;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-10px) rotate(45deg) scale(1.05);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg) scale(1.1);
+  }
+  75% {
+    transform: translateY(-10px) rotate(270deg) scale(1.05);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 212, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 212, 0, 0.6), 0 0 30px rgba(255, 77, 166, 0.3);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes hud-grid-scroll {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 720px, 0 720px;
+  }
+}
+
+@keyframes hud-scan {
+  0% {
+    opacity: 0.34;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.45;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 0.34;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hud-sweep {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0.0;
+  }
+  15% {
+    opacity: 0.65;
+  }
+  55% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0.0;
+  }
+}
+
+@keyframes hud-glitch {
+  0% {
+    clip-path: inset(0 0 92% 0);
+  }
+  10% {
+    clip-path: inset(22% 0 50% 0);
+  }
+  20% {
+    clip-path: inset(65% 0 18% 0);
+  }
+  30% {
+    clip-path: inset(12% 0 72% 0);
+  }
+  40% {
+    clip-path: inset(78% 0 8% 0);
+  }
+  50% {
+    clip-path: inset(28% 0 52% 0);
+  }
+  60% {
+    clip-path: inset(4% 0 88% 0);
+  }
+  70% {
+    clip-path: inset(58% 0 24% 0);
+  }
+  80% {
+    clip-path: inset(18% 0 62% 0);
+  }
+  90% {
+    clip-path: inset(72% 0 12% 0);
+  }
+  100% {
+    clip-path: inset(0 0 92% 0);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(17, 17, 17, 0.8);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)));
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, hsl(var(--secondary)), hsl(var(--primary)));
+  box-shadow: 0 0 12px hsl(var(--hud-glow-2) / 0.35);
+}
