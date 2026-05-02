@@ -4,18 +4,29 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Github, Twitter, Linkedin, Mail, Instagram } from 'lucide-react';
+import { Github, Linkedin, Mail, Instagram } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Mail, href: 'mailto:studio@nngtw.com', label: 'Email' },
-  ];
+const XIcon = ({ className = "w-4 h-4" }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M18.244 2H21.5l-7.5 8.57L22 22h-6.828l-5.34-6.99L3.5 22H.244l8.02-9.16L2 2h6.828l4.86 6.41L18.244 2z" />
+  </svg>
+);
+
+ const socialLinks = [
+  { icon: Github, href: '#', label: 'GitHub' },
+  { icon: XIcon, href: '#', label: 'X' },
+  { icon: Instagram, href: '#', label: 'Instagram' },
+  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  { icon: Mail, href: 'mailto:studio@nngtw.com', label: 'Email' },
+];
 
   const footerLinks = [
     { name: 'About Us', href: '/about' },

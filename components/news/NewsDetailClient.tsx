@@ -35,12 +35,13 @@ export default function NewsDetailClient({
             transition={{ duration: 0.5 }}
             className="mb-8"
           >
-            <Link href="/news" className="inline-flex">
-              <span className="relative inline-flex items-center justify-center rounded-full border border-primary/35 bg-card/45 px-6 py-3 text-base font-semibold text-primary shadow-lg shadow-primary/10 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-secondary/55 hover:text-secondary hover:shadow-secondary/20 md:px-8 md:py-4 md:text-lg">
-                Back to News
-                <span className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-r from-primary/0 via-primary/10 to-secondary/0 opacity-0 transition-opacity duration-300 hover:opacity-100" />
-              </span>
-            </Link>
+           <Link
+  href="/news"
+  className="inline-flex items-center gap-2 text-yellow-400 font-semibold text-lg hover:text-yellow-300 transition-colors"
+>
+  <span className="text-xl">←</span>
+  Back to News
+</Link>
           </motion.div>
 
           {/* Post Header */}

@@ -1,17 +1,18 @@
 /** @format */
 
 'use client';
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaDiscord,
+} from 'react-icons/fa';
+import { SiX } from 'react-icons/si'; // X (Twitter)
 
 import { motion } from 'framer-motion';
 import {
   Mail,
-  MapPin,
-  Phone,
-  Facebook,
-  Instagram,
-  Twitter,
-  Linkedin,
-  MessageSquare,
+  MapPin,  
 } from 'lucide-react';
 import MainLayout from '@/components/layout/main-layout';
 import ContactForm from '@/components/contact/contact-form';
@@ -80,61 +81,65 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <h2 className="mb-6 font-montserrat text-2xl font-bold text-primary">
-                Follow Us
-              </h2>
+    {/* Follow Us */}
+    <h2 className="mb-6 font-montserrat text-2xl font-bold text-primary">
+      Follow Us
+    </h2>
 
-              <div className="flex space-x-4">
-                <a
-                  href="https://facebook.com/nngtwstudio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary transition-colors hover:bg-primary hover:text-background"
-                  aria-label="Facebook"
-                >
-                  <Facebook size={20} />
-                </a>
-
-                <a
-                  href="https://instagram.com/nngtwstudio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary transition-colors hover:bg-primary hover:text-background"
-                  aria-label="Instagram"
-                >
-                  <Instagram size={20} />
-                </a>
-
-                <a
-                  href="https://twitter.com/nngtwstudio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary transition-colors hover:bg-primary hover:text-background"
-                  aria-label="Twitter"
-                >
-                  <Twitter size={20} />
-                </a>
-
-                <a
-                  href="https://linkedin.com/company/nngtwstudio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary transition-colors hover:bg-primary hover:text-background"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin size={20} />
-                </a>
-
-                <a
-                  href="https://discord.gg/nngtwstudio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary transition-colors hover:bg-primary hover:text-background"
-                  aria-label="Discord"
-                >
-                  <MessageSquare size={20} />
-                </a>
-              </div>
+  <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.2 }}
+  className="flex space-x-4"
+>
+  {[
+    {
+      icon: FaFacebookF,
+      href: 'https://facebook.com/nngtwstudio',
+      label: 'Facebook',
+      color: 'hover:text-[#1877F2]',
+    },
+    {
+      icon: FaInstagram,
+      href: 'https://instagram.com/nngtwstudio',
+      label: 'Instagram',
+      color: 'hover:text-pink-500',
+    },
+    {
+      icon: SiX,
+      href: 'https://twitter.com/nngtwstudio',
+      label: 'X',
+      color: 'hover:text-black dark:hover:text-white',
+    },
+    {
+      icon: FaLinkedinIn,
+      href: 'https://linkedin.com/company/nngtwstudio',
+      label: 'LinkedIn',
+      color: 'hover:text-[#0A66C2]',
+    },
+    {
+      icon: FaDiscord,
+      href: 'https://discord.gg/nngtwstudio',
+      label: 'Discord',
+      color: 'hover:text-[#5865F2]',
+    },
+  ].map((social, index) => (
+    <motion.a
+      key={social.label}
+      href={social.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, delay: index * 0.1 }}
+      whileHover={{ scale: 1.15, rotate: 5 }}
+      className={`w-10 h-10 rounded-full bg-card/40 border border-primary/15 flex items-center justify-center text-muted-foreground ${social.color} hover:bg-primary/10 hover:border-primary/35 transition-all duration-300`}
+      aria-label={social.label}
+    >
+      <social.icon className="w-4 h-4" />
+    </motion.a>
+  ))}
+</motion.div>
 
               {/* Map Placeholder */}
               <div className="mt-10 aspect-video w-full overflow-hidden rounded-lg bg-muted">

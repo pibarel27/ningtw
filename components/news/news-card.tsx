@@ -19,20 +19,20 @@ export default function NewsCard({ post, priority = false }: NewsCardProps) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="news-card flex overflow-hidden rounded-lg bg-card shadow-md transition-all hover:shadow-lg"
-      >
-        <div className="relative hidden w-1/3 sm:block">
-          <div className="news-image relative h-full transition-transform duration-300">
-            <Image
-              src={post.image}
-              alt={post.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover"
-              priority={priority}
-            />
-          </div>
-        </div>
+        className="news-card group flex overflow-hidden rounded-lg bg-card shadow-md transition-all hover:shadow-lg">
+      
+    <div className="relative hidden w-1/3 sm:block overflow-hidden">
+    <div className="relative h-full">
+    <Image
+      src={post.image}
+      alt={post.title}
+      fill
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+      priority={priority}
+    />
+  </div>
+</div>
         
         <div className="flex flex-1 flex-col p-5">
           <div className="mb-2 flex items-center">
