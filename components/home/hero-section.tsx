@@ -14,8 +14,8 @@ export default function HeroSection() {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   const scrollToContent = () => {
@@ -26,7 +26,31 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="hero-hud">
+    <section className="hero-hud relative">
+      {/* Glow CSS */}
+      <style jsx>{`
+        .studio-glow {
+          position: relative;
+          text-shadow: 0 0 5px rgba(0, 255, 255, 0.4);
+          animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+          0% {
+            text-shadow: 0 0 4px rgba(0, 255, 255, 0.3),
+                         0 0 8px rgba(0, 255, 255, 0.2);
+          }
+          50% {
+            text-shadow: 0 0 14px rgba(0, 255, 255, 0.9),
+                         0 0 28px rgba(0, 255, 255, 0.6);
+          }
+          100% {
+            text-shadow: 0 0 4px rgba(0, 255, 255, 0.3),
+                         0 0 8px rgba(0, 255, 255, 0.2);
+          }
+        }
+      `}</style>
+
       {/* Interactive HUD glow */}
       <div
         className="pointer-events-none absolute inset-0 opacity-70"
@@ -42,18 +66,15 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           className="max-w-4xl"
         >
-          <motion.h1 
-            className="hero-title mb-6 font-montserrat font-bold text-foreground"
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
+          {/* Title */}
+          <motion.h1 className="hero-title mb-6 font-montserrat font-bold text-foreground">
             Welcome to{" "}
-            <span className="glitch text-primary" data-text="Nngtw Studio">
+            <span className="studio-glow text-primary">
               Nngtw Studio
             </span>
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             className="mb-8 text-xl font-light text-muted-foreground md:text-2xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -61,8 +82,8 @@ export default function HeroSection() {
           >
             Imagine, Explore, Evolve.
           </motion.p>
-          
-          <motion.p 
+
+          <motion.p
             className="mb-10 text-lg text-foreground/80"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -70,37 +91,32 @@ export default function HeroSection() {
           >
             Dive into immersive puzzles, survival challenges, and AR experiments.
           </motion.p>
-          
-          <motion.div 
+
+          <motion.div
             className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
           >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href="/games">
                 <Button variant="outline" size="lg" className="btn-primary">
                   Explore Our Games
                 </Button>
               </Link>
             </motion.div>
-            
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href="/about">
-                <Button variant="outline" size="lg" className="btn-primary">
+                <Button variant="outline" size="lg" className="btn-secondary">
                   About Us
                 </Button>
               </Link>
             </motion.div>
           </motion.div>
         </motion.div>
-        
+
+        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

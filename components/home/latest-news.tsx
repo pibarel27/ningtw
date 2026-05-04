@@ -61,13 +61,13 @@ export default function LatestNews() {
             whileTap={{ scale: 0.95 }}
           >
             <Link href="/news">
-              <Button 
-                variant="link" 
-                size="lg"
-                className="transition-all duration-300 bg-card/50 backdrop-blur-sm px-6 py-3 rounded-full border border-primary/30 hover:border-secondary/50 hover:shadow-lg hover:shadow-secondary/20 text-primary hover:text-secondary"
-              >
-                Show More News
-              </Button>
+                <Button variant="outline" size="lg" className="btn-secondary backdrop-blur-sm px-6 py-3 rounded-full border"
+                >
+                 Show More News
+                </Button>
+
+
+
             </Link>
           </motion.div>
         </motion.div>

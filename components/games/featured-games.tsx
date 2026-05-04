@@ -195,10 +195,12 @@ export default function FeaturedGames() {
               <Button 
                 variant="link" 
                 size="lg"
-                className="text-primary hover:text-secondary transition-all duration-300 bg-card/50 backdrop-blur-sm px-6 py-3 rounded-full border border-primary/30 hover:border-secondary/50 hover:shadow-lg hover:shadow-secondary/20"
+                className="btn-secondary text-primary hover:text-secondary transition-all duration-300 bg-card/50 backdrop-blur-sm px-6 py-3 rounded-full border border-primary/30 hover:border-secondary/50 hover:shadow-lg hover:shadow-secondary/20"
               >
-                View mes
+                View Games
               </Button>
+
+              
             </Link>
           </motion.div>
         </motion.div>
